@@ -1,0 +1,12 @@
+- Spatial partioning
+- A partition of "cells" over the ambient space such that points in the same cell are spatially "near" and can be assumed to have similar properties
+- Applications:
+  - Regression: new points assigned to a cell take the mean response value of the others (classification, take the most common label)
+	- Vector quantization: new points q replaced with the mean of the data points in the cell
+- Diameter of a cell - The mean of the distances between the furthest pair of data points in each cell
+- Key idea - many real-world datasets lie on a manifold with low intrinsic dimensionality d within ambient space R^D, where d << D 
+  - k-d trees do not adapt automatically to low intrinsic dimensionality
+- Theorem - For any cell C in an RP tree, if the data in C have intrinsic dimensionality d, then all descendent cells at least d log d levels below will have at most half the diameter of C (there is no dependence on the extrinsic dimensionality D)
+- Definition: Local covariance dimension: A set S has local covariance dimension (d, eps, r) if neighborhoods of radius r have (1 - eps) fraction of their variance concentrated in a d-dimensional subspace. 
+  - Definition 2: Set S \in R^D has local covariance dimension (d, eps, r) if its restriction to any ball of radius r has covariance matrix whose largest d eigenvalues satisfy e1^2 + ... + ed^2 >= (1 - eps) * (e1^2 + ... + eD^2)
+	
