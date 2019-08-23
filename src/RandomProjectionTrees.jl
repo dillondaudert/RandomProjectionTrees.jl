@@ -1,5 +1,8 @@
 module RandomProjectionTrees
 
-greet() = print("Hello World!")
+import Distances: PreMetric, Euclidean
+import StatsBase: sample
+
+include("tree.jl")
 
 end # module
