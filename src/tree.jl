@@ -9,7 +9,7 @@ struct RandomProjectionTreeNode{T <: Number,
     rightchild::Union{RandomProjectionTreeNode{T, V}, Nothing}
 end
 
-struct RandomProjectionTree{M <: PreMetric, T <: Number, V <: AbstractVector{T}}
+struct RandomProjectionTree{T <: Number, V <: AbstractVector{T}}
     root::RandomProjectionTreeNode{T, V}
     metric::M
 end

@@ -1,8 +1,9 @@
 module RandomProjectionTrees
 
-import Distances: PreMetric, Euclidean
-import StatsBase: sample
+using StatsBase: sample
+using LinearAlgebra: adjoint, norm
 
-include("tree.jl")
+#include("tree.jl")
+include("split.jl")
 
 end # module
