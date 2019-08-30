@@ -6,17 +6,14 @@ function rp_split(data::U, indices) where {T <: Number,
     """
     Splits the data into two sets depending on which side of a random hyperplane
     each point lies.
-    Returns the hyperplane, offset, left indices, and right indices.
+    Returns the left indices, right indices, hyperplane, and offset.
     """
 
     # select two random points and set the hyperplane between them
     leftidx, rightidx = sample(indices, 2; replace=false)
     hyperplane = data[leftidx] - data[rightidx]
 
-    offset = 0
-    for d in eachindex(hyperplane)
-        offset -= adjoint(hyperplane)[d] * (data[leftidx][d] + data[rightidx][d])/2
-    end
+    offset = -adjoint(hyperplane) * (data[leftidx] + data[rightidx]) / 2
 
     lefts = Int[]
     rights = Int[]
@@ -36,5 +33,5 @@ function rp_split(data::U, indices) where {T <: Number,
         end
     end
 
-    return hyperplane, offset, lefts, rights
+    return lefts, rights, hyperplane, offset
 end
