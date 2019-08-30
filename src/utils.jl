@@ -7,13 +7,13 @@ sizeof(n::RandomProjectionTreeNode) = sizeof(n.indices) + sizeof(n.isleaf) +
 
 num_nodes(t::RandomProjectionTree) = num_nodes(t.root)
 
-function num_nodes(n::RandomProjectionTreeNode)
+function num_nodes(n::RandomProjectionTreeNode)::Int
     n.isleaf || 1 + num_nodes(n.leftchild) + num_nodes(n.rightchild)
 end
 
 num_leaves(t::RandomProjectionTree) = num_leaves(t.root)
 
-function num_leaves(n::RandomProjectionTreeNode)
+function num_leaves(n::RandomProjectionTreeNode)::Int
     n.isleaf || num_leaves(n.leftchild) + num_leaves(n.rightchild)
 end
 
