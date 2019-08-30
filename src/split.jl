@@ -22,8 +22,8 @@ function rp_split(data::U, indices) where {T <: Number,
     rights = Int[]
     for (i, idx) in enumerate(indices)
         # for each data vector, compute which side of the hyperplane
-        margin = adjoint(hyperplane) * data[idx] + offset
-        if norm(margin) < sqrt(eps(margin))
+        margin = real(adjoint(hyperplane) * data[idx] + offset)
+        if abs(margin) < sqrt(eps(margin))
             if rand() < .5
                 append!(lefts, idx)
             else
