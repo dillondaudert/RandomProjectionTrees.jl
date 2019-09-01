@@ -15,8 +15,8 @@ function rp_split(data::U, indices) where {T <: Number,
 
     offset = -adjoint(hyperplane) * (data[leftidx] + data[rightidx]) / 2
 
-    lefts = Int[]
-    rights = Int[]
+    lefts = sizehint!(Int[], div(length(data), 2))
+    rights = sizehint!(Int[], div(length(data), 2))
     for (i, idx) in enumerate(indices)
         # for each data vector, compute which side of the hyperplane
         margin = real(adjoint(hyperplane) * data[idx] + offset)
@@ -34,4 +34,8 @@ function rp_split(data::U, indices) where {T <: Number,
     end
 
     return lefts, rights, hyperplane, offset
+end
+
+function select_side(hyperplane, offset, point)
+    
 end
