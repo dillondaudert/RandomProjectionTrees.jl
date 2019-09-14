@@ -1,12 +1,13 @@
 module RandomProjectionTrees
 
+import Base.sizeof
 using StatsBase: sample
-using LinearAlgebra: adjoint, norm
+using LinearAlgebra: adjoint
 
 include("tree.jl")
 include("split.jl")
 include("utils.jl")
 
-export RandomProjectionTree
+export RandomProjectionTree, search_rptree
 
 end # module

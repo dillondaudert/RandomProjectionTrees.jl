@@ -13,15 +13,16 @@ struct RandomProjectionTree{T <: Number, V <: AbstractVector{T}}
     root::RandomProjectionTreeNode{T, V}
 end
 
-function RandomProjectionTree(data,
-                              leafsize = 30,
-                              )
-    indices = 1:length(data)
-    root = build_rptree(data, indices, leafsize)
-
+function RandomProjectionTree(data; leafsize = 30)
+    root = build_rptree(data, 1:length(data), leafsize)
     return RandomProjectionTree(root)
 end
 
+"""
+    build_rptree(data::AbstractVector, indices, leafsize) -> RandomProjectionTreeNode
+
+Recursively construct the RP tree by randomly splitting the data into nodes.
+"""
 function build_rptree(data::U, indices, leafsize) where {T <: Number,
                                                          V <: AbstractVector{T},
                                                          U <: AbstractVector{V}}
