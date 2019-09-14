@@ -9,14 +9,24 @@ struct RandomProjectionTreeNode{T <: Number,
     rightchild::Union{RandomProjectionTreeNode{T, V}, Nothing}
 end
 
+
 struct RandomProjectionTree{T <: Number, V <: AbstractVector{T}}
     root::RandomProjectionTreeNode{T, V}
+    leafsize
 end
 
+"""
+    RandomProjectionTree(data; leafsize = 30)
+
+A RandomProjectionTree is a binary tree whose non-leaf nodes correspond to random
+hyperplanes in ℜᵈ and whose leaf nodes represent subregions that partition this
+space.
+"""
 function RandomProjectionTree(data; leafsize = 30)
     root = build_rptree(data, 1:length(data), leafsize)
-    return RandomProjectionTree(root)
+    return RandomProjectionTree(root, leafsize)
 end
+
 
 """
     build_rptree(data::AbstractVector, indices, leafsize) -> RandomProjectionTreeNode
@@ -63,4 +73,75 @@ function search_rptree(tree::RandomProjectionTree{T, V},
     end
     return node
 
+end
+
+#############################
+# Random Projection Forests
+#############################
+
+struct RandomProjectionForest{T, V}
+    trees::Vector{RandomProjectionTree{T, V}}
+end
+
+"""
+    RandomProjectionForest(data, args...; n_trees, kwargs...) -> RandomProjectionForest
+
+Create a collection of `n_trees` random projection trees built using `data`.
+`args...` and `kwargs...` are passed to the RandomProjectionTree constructor.
+"""
+function RandomProjectionForest(data, args...;
+                                n_trees, kwargs...)
+    # TODO: threading
+    trees = [RandomProjectionTree(data, args...; kwargs...) for _ in 1:n_trees]
+    return RandomProjectionForest(trees)
+end
+
+"""
+    approx_knn(tree, data, point, n_neighbors) -> indices, distances
+
+Find approximate nearest neighbors to `point` in `data` using a random
+projection tree built on this data. Returns the indices and distances to the
+approximate knns as arrays, sorted by distance.
+"""
+function approx_knn(tree::RandomProjectionTree,
+                    data,
+                    point,
+                    n_neighbors)
+    # TODO: handle case when n_neighbors > tree.leafsize
+    candidates = search_rptree(tree, point).indices
+
+    return _approx_knn(data, point, candidates, n_neighbors)
+end
+
+"""
+
+"""
+function approx_knn(forest::RandomProjectionForest,
+                    data,
+                    point,
+                    n_neighbors)
+    # TODO: threading
+    candidates = []
+    for tree in forest.trees
+        union!(candidates, search_rptree(tree, point).indices)
+    end
+    return _approx_knn(data, point, candidates, n_neighbors)
+end
+
+"""
+
+"""
+function _approx_knn(data, point, candidates, n_neighbors)
+    length(candidates) >= n_neighbors || @warn "Fewer candidates than n_neighbors!"
+    # TODO: threading
+    distances = [norm(data[i] - point) for i in candidates]
+    perm = sortperm(distances)
+    indices = candidates[perm]
+    distances = distances[perm]
+
+    if n_neighbors < length(indices)
+        indices = indices[1:n_neighbors]
+        distances = distances[1:n_neighbors]
+    end
+    return indices, distances
 end
