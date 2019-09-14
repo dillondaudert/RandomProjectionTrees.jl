@@ -46,3 +46,21 @@ function build_rptree(data::U, indices, leafsize) where {T <: Number,
                                     leftchild,
                                     rightchild)
 end
+
+
+"""
+    search_tree(tree, point) -> node::RandomProjectionTreeNode
+
+Search a random projection tree for the node to which a point belongs.
+"""
+function search_rptree(tree::RandomProjectionTree{T, V},
+                       point::V
+                       ) where {T, V}
+
+    node = tree.root
+    while !node.isleaf
+        node = select_side(node.hyperplane, node.offset, point) ? node.leftchild : node.rightchild
+    end
+    return node
+
+end

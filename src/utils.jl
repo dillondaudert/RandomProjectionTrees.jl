@@ -1,9 +1,9 @@
 
-sizeof(t::RandomProjectionTree) = sizeof(t.root)
+Base.sizeof(t::RandomProjectionTree) = sizeof(t.root)
 
-sizeof(n::RandomProjectionTreeNode) = sizeof(n.indices) + sizeof(n.isleaf) +
-                                      sizeof(n.hyperplane) + sizeof(n.offset) +
-                                      sizeof(n.leftchild) + sizeof(n.rightchild)
+Base.sizeof(n::RandomProjectionTreeNode) = sizeof(n.indices) + sizeof(n.isleaf) +
+                                           sizeof(n.hyperplane) + sizeof(n.offset) +
+                                           sizeof(n.leftchild) + sizeof(n.rightchild)
 
 num_nodes(t::RandomProjectionTree) = num_nodes(t.root)
 
@@ -29,22 +29,4 @@ max_nnz(t::RandomProjectionTree) = max_nnz(t.root)
 function max_nnz(n::RandomProjectionTreeNode)
     n.isleaf && return 0
     return max(nnz(n.hyperplane), max_nnz(n.leftchild), max_nnz(n.rightchild))
-end
-
-
-"""
-    search_tree(tree, point) -> node::RandomProjectionTreeNode
-
-Search a random projection tree for the node to which a point belongs.
-"""
-function search_rptree(tree::RandomProjectionTree{T, V},
-                       point::V
-                       ) where {T, V}
-
-    node = tree.root
-    while !node.isleaf
-        node = select_side(node.hyperplane, node.offset, point) ? node.leftchild : node.rightchild
-    end
-    return node
-
 end

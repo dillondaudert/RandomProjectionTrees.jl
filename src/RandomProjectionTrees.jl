@@ -1,6 +1,5 @@
 module RandomProjectionTrees
 
-import Base.sizeof
 using StatsBase: sample
 using LinearAlgebra: adjoint
 
